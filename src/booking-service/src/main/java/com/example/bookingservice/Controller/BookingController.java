@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 public class BookingController {
 
     // TIỆT CHIÊU DEVOPS: Lấy URL từ biến môi trường
-    @Value("${USER_SERVICE_URL:http://localhost:8080}")
+    @Value("${USER_SERVICE_URL}")
     private String userServiceUrl;
 
     @GetMapping("/create")
