@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+  namespace: production
+spec:
+  replicas: 2 # Môi trường Production nên chạy từ 2 Pod trở lên để dự phòng (High Availability)
+  selector:
+    matchLabels:
+      app: identity-service
+  template:
+    metadata:
+      labels:
+        app: identity-service
+    spec:
+      containers:
+      - name: identity-app
+        image: lekhai123/identity-service:latest 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATA_MONGODB_URI
+          value: "mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/identity_db?retryWrites=true&w=majority"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+  namespace: production
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: identity-service

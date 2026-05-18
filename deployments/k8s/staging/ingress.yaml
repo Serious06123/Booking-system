@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: staging-ingress
+  namespace: staging
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: staging.bookinghotel.local # Tên miền giả lập cho môi trường Staging
+    http:
+      paths:
+      - path: /api/v1/identity
+        pathType: Prefix
+        backend:
+          service:
+            name: identity-service
+            port:
+              number: 8080
+      - path: /api/v1/booking
+        pathType: Prefix
+        backend:
+          service:
+            name: booking-service
+            port:
+              number: 8081

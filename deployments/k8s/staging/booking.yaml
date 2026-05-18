@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+  namespace: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+      - name: booking-app
+        image: lekhai123/booking-service:latest 
+        ports:
+        - containerPort: 8081 
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://mysql-service.booking-system.svc.cluster.local:3306/booking_db"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "Long190105"
+        # FIX LOCALHOST: Trỏ thẳng sang Service của Identity ở port 8080 trong namespace staging
+        - name: USER_SERVICE_URL
+          value: "http://identity-service.staging.svc.cluster.local:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-service
+  namespace: staging
+spec:
+  ports:
+  - port: 8081
+    targetPort: 8081
+  selector:
+    app: booking-service
